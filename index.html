@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="timer-wrapper">
+            <!-- Time Input Section -->
+            <div class="time-input" id="timeInput">
+                <div class="input-group">
+                    <input type="number" id="hours" min="0" max="23" value="0" />
+                    <label>h</label>
+                </div>
+                <div class="separator">:</div>
+                <div class="input-group">
+                    <input type="number" id="minutes" min="0" max="59" value="5" />
+                    <label>m</label>
+                </div>
+                <div class="separator">:</div>
+                <div class="input-group">
+                    <input type="number" id="seconds" min="0" max="59" value="0" />
+                    <label>s</label>
+                </div>
+            </div>
+
+            <!-- Timer Display Section -->
+            <div class="timer-display" id="timerDisplay" style="display: none;">
+                <!-- Fly Circle Container -->
+                <div class="fly-orbit">
+                    <img src="Assets/time fly (large).png" alt="Fly" class="fly" id="fly" />
+                    <!-- Tongue Animation -->
+                    <img src="Assets/tongue.png" alt="Tongue" class="tongue" id="tongue" />
+                </div>
+
+                <!-- Frog and Lily Pad -->
+                <div class="frog-container">
+                    <img src="Assets/frog.png" alt="Frog" class="frog" id="frog" />
+                    <img src="Assets/Frog mouth:fly.png" alt="Frog with fly" class="frog-mouth-fly" id="frogMouthFly" />
+                    <img src="Assets/lilypad.png" alt="Lily Pad" class="lilypad" />
+                </div>
+
+                <!-- Timer and Progress Ring -->
+                <div class="timer-ring-container">
+                    <div class="time-remaining" id="timeRemaining">05:00</div>
+                    <div class="progress-ring">
+                        <svg width="300" height="300">
+                            <circle
+                                class="progress-ring-circle-bg"
+                                stroke="#d4edda"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="140"
+                                cx="150"
+                                cy="150"
+                            />
+                            <circle
+                                class="progress-ring-circle"
+                                stroke="#28a745"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="140"
+                                cx="150"
+                                cy="150"
+                                id="progressCircle"
+                            />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Flies Caught Counter -->
+                <div class="flies-counter" id="fliesCounter">
+                    <span class="counter-label">Time Flies Caught:</span>
+                    <span class="counter-value" id="fliesCount">0</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" style="display: none;">Pause</button>
+                <button class="btn btn-secondary" id="resumeBtn" style="display: none;">Resume</button>
+                <button class="btn btn-text" id="resetBtn" style="display: none;">Reset</button>
+            </div>
+
+            <!-- Quick Timer Presets -->
+            <div class="presets" id="presets">
+                <button class="preset-btn" data-time="60">1 min</button>
+                <button class="preset-btn" data-time="180">3 min</button>
+                <button class="preset-btn" data-time="300">5 min</button>
+                <button class="preset-btn" data-time="600">10 min</button>
+                <button class="preset-btn" data-time="900">15 min</button>
+                <button class="preset-btn" data-time="1800">30 min</button>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            <div class="notification-content">
+                <div class="notification-icon">⏰</div>
+                <div class="notification-text">Timer finished!</div>
+                <button class="btn btn-primary" id="dismissBtn">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

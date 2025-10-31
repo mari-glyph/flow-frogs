@@ -1,0 +1,465 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #fffacd;
+    color: #2d5016;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.timer-wrapper {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+/* Time Input Styles */
+.time-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group input {
+    width: 80px;
+    height: 80px;
+    font-size: 48px;
+    font-weight: 400;
+    text-align: center;
+    border: 2px solid #a8d5a3;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s;
+    color: #2d5016;
+    background: #fff;
+}
+
+.input-group input:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+}
+
+.input-group input::-webkit-inner-spin-button,
+.input-group input::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #4a7c3a;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.separator {
+    font-size: 48px;
+    font-weight: 300;
+    color: #4a7c3a;
+    margin: 0 4px;
+    padding-bottom: 24px;
+}
+
+/* Timer Display Styles */
+.timer-display {
+    position: relative;
+    margin-bottom: 40px;
+    min-height: 700px;
+}
+
+/* Frog Container */
+.frog-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 20px;
+    z-index: 5;
+}
+
+.frog {
+    position: absolute;
+    width: 180px;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.lilypad {
+    position: absolute;
+    width: 220px;
+    height: auto;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.frog-mouth-fly {
+    position: absolute;
+    width: 60px;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%);
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.frog-mouth-fly.show {
+    opacity: 1;
+}
+
+/* Fly Orbit */
+.fly-orbit {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.fly {
+    position: absolute;
+    width: 60px;
+    height: auto;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: orbitFly 60s linear infinite;
+    z-index: 10;
+}
+
+.fly.caught {
+    opacity: 0;
+}
+
+.fly.zoom-in {
+    animation: zoomIn 0.5s ease-out;
+}
+
+/* Tongue */
+.tongue {
+    position: absolute;
+    width: 80px;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.tongue.shoot {
+    animation: shootTongue 0.4s ease-in-out;
+}
+
+/* Timer Ring Container */
+.timer-ring-container {
+    position: relative;
+    margin-top: 20px;
+}
+
+.progress-ring {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+    transition: stroke-dashoffset 0.3s linear;
+    stroke-linecap: round;
+}
+
+.time-remaining {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 64px;
+    font-weight: 300;
+    color: #2d5016;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Flies Counter */
+.flies-counter {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+    color: #2d5016;
+}
+
+.counter-label {
+    margin-right: 8px;
+}
+
+.counter-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #28a745;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.btn {
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    letter-spacing: 0.25px;
+}
+
+.btn-primary {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #218838;
+    box-shadow: 0 1px 2px 0 rgba(40, 167, 69, 0.3), 0 1px 3px 1px rgba(40, 167, 69, 0.15);
+}
+
+.btn-primary:active {
+    background: #1e7e34;
+}
+
+.btn-secondary {
+    background: #f1f3f4;
+    color: #202124;
+}
+
+.btn-secondary:hover {
+    background: #e8eaed;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+.btn-text {
+    background: transparent;
+    color: #28a745;
+}
+
+.btn-text:hover {
+    background: rgba(40, 167, 69, 0.08);
+}
+
+/* Presets */
+.presets {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.preset-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    background: #fff;
+    color: #4a7c3a;
+    border: 1px solid #a8d5a3;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.preset-btn:hover {
+    background: #f0f8f0;
+    border-color: #28a745;
+    box-shadow: 0 1px 2px 0 rgba(40, 167, 69, 0.3);
+}
+
+.preset-btn:active {
+    background: #e0f0e0;
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+.notification.show {
+    display: flex;
+}
+
+.notification-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s;
+}
+
+.notification-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: bounce 0.5s;
+}
+
+.notification-text {
+    font-size: 24px;
+    font-weight: 400;
+    color: #202124;
+    margin-bottom: 24px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Fly orbit animation */
+@keyframes orbitFly {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateY(-250px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateY(-250px) rotate(-360deg);
+    }
+}
+
+/* Tongue shoot animation */
+@keyframes shootTongue {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5) rotate(var(--tongue-angle, 0deg));
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+}
+
+/* Fly zoom in animation */
+@keyframes zoomIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .input-group input {
+        width: 60px;
+        height: 60px;
+        font-size: 36px;
+    }
+
+    .separator {
+        font-size: 36px;
+    }
+
+    .time-remaining {
+        font-size: 48px;
+    }
+
+    .progress-ring {
+        width: 250px;
+        height: 250px;
+    }
+
+    .progress-ring svg {
+        width: 250px;
+        height: 250px;
+    }
+
+    .progress-ring-circle,
+    .progress-ring-circle-bg {
+        r: 115px;
+        cx: 125px;
+        cy: 125px;
+    }
+}
