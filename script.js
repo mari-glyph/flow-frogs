@@ -34,6 +34,7 @@ const dismissBtn = document.getElementById('dismissBtn');
 const fly = document.getElementById('fly');
 const tongue = document.getElementById('tongue');
 const frog = document.getElementById('frog');
+const bam = document.getElementById('bam');
 const fliesCount = document.getElementById('fliesCount');
 
 // Audio for notification
