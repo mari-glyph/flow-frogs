@@ -8,6 +8,8 @@ let isPaused = false;
 let fliesCaught = 0;
 let catchInterval = null;
 let nextCatchTime = 0;
+let flyAnimationFrame = null;
+let animationStartTime = null;
 
 // DOM elements
 const timeInput = document.getElementById('timeInput');
@@ -31,17 +33,11 @@ const dismissBtn = document.getElementById('dismissBtn');
 // Frog elements
 const fly = document.getElementById('fly');
 const tongue = document.getElementById('tongue');
-const frogMouthFly = document.getElementById('frogMouthFly');
+const frog = document.getElementById('frog');
 const fliesCount = document.getElementById('fliesCount');
 
 // Audio for notification
 const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzWM0+3RhzQHHGS57OihURELTKXh8bllHAY2kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsIHGS56+mjURELTKXh8bllHAY3kNXzzn0pBSh+zPLaizsI=');
-
-// Initialize progress circle
-const radius = progressCircle.r.baseVal.value;
-const circumference = radius * 2 * Math.PI;
-progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-progressCircle.style.strokeDashoffset = circumference;
 
 // Format time display
 function formatTime(seconds) {
@@ -55,10 +51,11 @@ function formatTime(seconds) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Update progress circle
-function setProgress(percent) {
-    const offset = circumference - (percent / 100) * circumference;
-    progressCircle.style.strokeDashoffset = offset;
+// Update frog grayscale based on progress
+function updateFrogColor(percent) {
+    // 0% = full grayscale (100%), 100% = no grayscale (0%)
+    const grayscale = 100 - percent;
+    frog.style.filter = `grayscale(${grayscale}%)`;
 }
 
 // Get total seconds from inputs
@@ -84,10 +81,142 @@ function setTimeInputs(seconds) {
 function updateDisplay() {
     timeRemaining.textContent = formatTime(remainingTime);
     const progress = ((totalTime - remainingTime) / totalTime) * 100;
-    setProgress(progress);
+    updateFrogColor(progress);
 
     // Update document title
     document.title = `${formatTime(remainingTime)} - Timer`;
+}
+
+// Calculate fly position and update its transform smoothly
+function updateFlyPosition() {
+    if (!timerInterval && remainingTime > 0) return; // Only update when timer is running
+
+    const elapsed = totalTime - remainingTime;
+
+    // Add sub-second precision for smooth animation
+    const now = Date.now();
+    const msSinceSecond = animationStartTime ? ((now - animationStartTime) % 1000) / 1000 : 0;
+    const preciseElapsed = elapsed + msSinceSecond;
+
+    const angle = (preciseElapsed / 60) * 360; // 60 seconds for full orbit
+    const angleRad = (angle * Math.PI) / 180;
+    const orbitRadius = 250; // pixels from center
+
+    const x = Math.cos(angleRad) * orbitRadius;
+    const y = Math.sin(angleRad) * orbitRadius;
+
+    fly.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+}
+
+// Continuous fly animation loop
+function animateFly() {
+    if (timerInterval && remainingTime > 0) {
+        updateFlyPosition();
+        flyAnimationFrame = requestAnimationFrame(animateFly);
+    }
+}
+
+// Get current fly angle
+function getCurrentFlyAngle() {
+    const elapsed = totalTime - remainingTime;
+    return (elapsed / 60) * 360; // degrees
+}
+
+// Calculate frog rotation to face fly
+function calculateFrogRotation() {
+    const angle = getCurrentFlyAngle();
+    return angle + 90; // Head is at top, so add 90 degrees to face fly
+}
+
+// Catch fly animation
+function catchFly() {
+    if (isPaused || remainingTime === 0) return;
+
+    // 1. Rotate frog to face the fly
+    const frogRotation = calculateFrogRotation();
+    frog.classList.add('rotating');
+    frog.style.transform = `translate(-50%, -50%) rotate(${frogRotation}deg)`;
+
+    setTimeout(() => {
+        // 2. Shoot tongue (aligned bottom with center)
+        tongue.style.transform = `translate(-50%, -100%) rotate(${frogRotation}deg)`;
+        tongue.classList.add('shoot');
+
+        // 3. Get current fly position for bam placement
+        const angle = getCurrentFlyAngle();
+        const angleRad = (angle * Math.PI) / 180;
+        const orbitRadius = 250;
+        const flyX = Math.cos(angleRad) * orbitRadius;
+        const flyY = Math.sin(angleRad) * orbitRadius;
+
+        setTimeout(() => {
+            // 4. Start moving fly toward center and show Bam!
+            const randomRotation = Math.random() * 360;
+            bam.style.transform = `translate(calc(-50% + ${flyX}px), calc(-50% + ${flyY}px)) rotate(${randomRotation}deg)`;
+            bam.classList.add('show');
+
+            // Start fly moving to center (over 300ms to match tongue retraction)
+            const startTime = Date.now();
+            const duration = 300;
+
+            const animateFlyToCenter = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                const currentX = flyX * (1 - progress);
+                const currentY = flyY * (1 - progress);
+
+                fly.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateFlyToCenter);
+                } else {
+                    // Fly reached center
+                    setTimeout(() => {
+                        // Reset everything
+                        tongue.classList.remove('shoot');
+                        bam.classList.remove('show');
+                        frog.classList.remove('rotating');
+                        frog.style.transform = 'translate(-50%, -50%)';
+                        tongue.style.transform = 'translate(-50%, -100%)'; /* Keep bottom aligned */
+
+                        // Increment counter
+                        fliesCaught++;
+                        fliesCount.textContent = fliesCaught;
+                    }, 100);
+                }
+            };
+
+            requestAnimationFrame(animateFlyToCenter);
+        }, 300); // Wait for tongue to extend
+    }, 300); // Wait for frog to rotate
+}
+
+// Schedule fly catches - 1.5 times every 2 minutes = once every 80 seconds
+function scheduleFlycatches() {
+    // Clear any existing schedule
+    if (catchInterval) {
+        clearInterval(catchInterval);
+    }
+
+    // Catch interval: 80 seconds (1.5 catches per 2 minutes)
+    const catchFrequency = 80; // seconds
+
+    // Schedule first catch
+    nextCatchTime = catchFrequency;
+
+    // Don't use setInterval, check every second in tick function
+}
+
+// Check if it's time to catch a fly
+function checkFlyCatch() {
+    const elapsed = totalTime - remainingTime;
+
+    // Check if we've reached the next catch time
+    if (elapsed >= nextCatchTime && elapsed < nextCatchTime + 1) {
+        catchFly();
+        nextCatchTime += 80; // Schedule next catch in 80 seconds
+    }
 }
 
 // Timer tick
@@ -95,6 +224,7 @@ function tick() {
     if (remainingTime > 0) {
         remainingTime--;
         updateDisplay();
+        checkFlyCatch();
     } else {
         finishTimer();
     }
@@ -111,6 +241,8 @@ function startTimer() {
 
     totalTime = seconds;
     remainingTime = seconds;
+    fliesCaught = 0;
+    fliesCount.textContent = '0';
 
     timeInput.style.display = 'none';
     timerDisplay.style.display = 'block';
@@ -120,13 +252,25 @@ function startTimer() {
     pauseBtn.style.display = 'inline-block';
     resetBtn.style.display = 'inline-block';
 
+    // Schedule fly catches
+    scheduleFlycatches();
+
     updateDisplay();
+    animationStartTime = Date.now();
     timerInterval = setInterval(tick, 1000);
+
+    // Start smooth fly animation
+    animateFly();
 }
 
 // Pause timer
 function pauseTimer() {
     clearInterval(timerInterval);
+    timerInterval = null;
+    if (flyAnimationFrame) {
+        cancelAnimationFrame(flyAnimationFrame);
+        flyAnimationFrame = null;
+    }
     isPaused = true;
 
     pauseBtn.style.display = 'none';
@@ -140,16 +284,36 @@ function resumeTimer() {
     resumeBtn.style.display = 'none';
     pauseBtn.style.display = 'inline-block';
 
+    animationStartTime = Date.now();
     timerInterval = setInterval(tick, 1000);
+
+    // Resume smooth fly animation
+    animateFly();
 }
 
 // Reset timer
 function resetTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
+    if (flyAnimationFrame) {
+        cancelAnimationFrame(flyAnimationFrame);
+        flyAnimationFrame = null;
+    }
     remainingTime = 0;
     totalTime = 0;
     isPaused = false;
+    fliesCaught = 0;
+    nextCatchTime = 0;
+    animationStartTime = null;
+
+    // Clear any ongoing animations
+    tongue.classList.remove('shoot');
+    bam.classList.remove('show');
+    frog.classList.remove('rotating');
+    frog.style.transform = 'translate(-50%, -50%)';
+    frog.style.filter = 'grayscale(100%)';
+    tongue.style.transform = 'translate(-50%, -100%)'; /* Keep bottom aligned */
+    fly.style.transform = 'translate(-50%, -50%)';
 
     timeInput.style.display = 'flex';
     timerDisplay.style.display = 'none';
@@ -161,12 +325,16 @@ function resetTimer() {
     resetBtn.style.display = 'none';
 
     document.title = 'Timer';
-    setProgress(0);
 }
 
 // Finish timer
 function finishTimer() {
     clearInterval(timerInterval);
+    timerInterval = null;
+    if (flyAnimationFrame) {
+        cancelAnimationFrame(flyAnimationFrame);
+        flyAnimationFrame = null;
+    }
 
     // Play sound
     audio.play().catch(e => console.log('Audio play failed:', e));

@@ -29,51 +29,31 @@
 
             <!-- Timer Display Section -->
             <div class="timer-display" id="timerDisplay" style="display: none;">
-                <!-- Fly Circle Container -->
-                <div class="fly-orbit">
-                    <img src="Assets/time fly (large).png" alt="Fly" class="fly" id="fly" />
-                    <!-- Tongue Animation -->
-                    <img src="Assets/tongue.png" alt="Tongue" class="tongue" id="tongue" />
-                </div>
+                <!-- Central Scene Container -->
+                <div class="scene-container">
+                    <!-- Layer 1: Lily Pad (bottom) -->
+                    <img src="Assets/lilypad.svg" alt="Lily Pad" class="lilypad" id="lilypad" />
 
-                <!-- Frog and Lily Pad -->
-                <div class="frog-container">
-                    <img src="Assets/frog.png" alt="Frog" class="frog" id="frog" />
-                    <img src="Assets/Frog mouth:fly.png" alt="Frog with fly" class="frog-mouth-fly" id="frogMouthFly" />
-                    <img src="Assets/lilypad.png" alt="Lily Pad" class="lilypad" />
-                </div>
+                    <!-- Layer 2: Bam! graphic -->
+                    <img src="Assets/Bam!.svg" alt="Bam" class="bam" id="bam" />
 
-                <!-- Timer and Progress Ring -->
-                <div class="timer-ring-container">
+                    <!-- Layer 3: Tongue -->
+                    <img src="Assets/tongue.svg" alt="Tongue" class="tongue" id="tongue" />
+
+                    <!-- Layer 4: Time Fly (orbiting) -->
+                    <img src="Assets/time fly.svg" alt="Time Fly" class="fly" id="fly" />
+
+                    <!-- Layer 5: Frog (top, rotatable) -->
+                    <img src="Assets/frog.svg" alt="Frog" class="frog" id="frog" />
+
+                    <!-- Layer 6: Timer Display (between lily pad and fly) -->
                     <div class="time-remaining" id="timeRemaining">05:00</div>
-                    <div class="progress-ring">
-                        <svg width="300" height="300">
-                            <circle
-                                class="progress-ring-circle-bg"
-                                stroke="#d4edda"
-                                stroke-width="8"
-                                fill="transparent"
-                                r="140"
-                                cx="150"
-                                cy="150"
-                            />
-                            <circle
-                                class="progress-ring-circle"
-                                stroke="#28a745"
-                                stroke-width="8"
-                                fill="transparent"
-                                r="140"
-                                cx="150"
-                                cy="150"
-                                id="progressCircle"
-                            />
-                        </svg>
-                    </div>
                 </div>
 
                 <!-- Flies Caught Counter -->
                 <div class="flies-counter" id="fliesCounter">
-                    <span class="counter-label">Time Flies Caught:</span>
+                    <img src="Assets/time fly.svg" alt="Fly" class="counter-fly-icon" />
+                    <span class="counter-label">Caught:</span>
                     <span class="counter-value" id="fliesCount">0</span>
                 </div>
             </div>
